@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+    <link rel="manifest" href="assets/images/site.webmanifest">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/proprieties.css">
+    <link rel="stylesheet" href="./assets/css/KeyFrames.css">
+    <title>Portfolio</title>
+        
+    
+</head>
+
+   
+<body>
+
+     
+    <div class="container">
+
+        <div class="hamburguer" id="Close-menu">
+            <div class="line" id="line1"></div>
+            <div class="line" id="line2"></div>
+            <div class="line" id="line3"></div>
+            <span>Fermer</span>
+        </div>
+
+        <header>
+            <div class="img-wrapper">
+                <img src="./assets/images/backgroundimg.jpg" alt="">
+            </div>
+            <div class="banner">
+                <h1 class="title-style">Portfolio de Kendi</h1>
+                <p>bts sio sisr</p>
+                <a class="ButtonCustom" id="button-banner" href="./docs/CV de kendi.pdf" target="_blank" rel="noopener">En savoir plus</a>
+            </div>
+        </header>
+
+        <aside class="sidebar">
+            <nav>
+                <ul class="menu">
+                    <li id="menu-1" class="menu-item"><a id="Close-menu" href="#" class="menu-link">accueil</a></li>
+                    <li id="menu-2" class="menu-item"><a id="Close-menu" href="#conhecimentos"
+                            class="menu-link">compétences</a></li>
+                    <li id="menu-3" class="menu-item"><a id="Close-menu" href="#projetos" class="menu-link">projets</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="social-media">
+                <a id="social-1" href="#"><i class="fab fa-github"></i></a>
+                <a id="social-2" href="#"><i class="fab fa-instagram"></i></a>
+                <a id="social-3" href="https://www.linkedin.com/in/kendi-cadet" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </aside>
+
+        <section class="sessao-conhecimentos">
+            <div class="sessao-header" id="conhecimentos">
+                <h1 class="title-style">Compétences</h1>
+            </div>
+            <div class="conhecimentos">
+                <div class="conhecimento" data-anime="left">
+                    <div class="conhecimento-header">
+                        <i class="fab fa-html5"></i>
+                        <h3>HTML</h3>
+                    </div>
+                    <div class="conhecimento-text">
+
+                    </div>
+                </div>
+                <div class="conhecimento" data-anime="right">
+                    <div class="conhecimento-header">
+                        <i class="fab fa-css3-alt"></i>
+                        <h3>CSS</h3>
+                    </div>
+                    <div class="conhecimento-text">
+
+                    </div>
+                </div>
+                <div class="conhecimento" data-anime="left">
+                    <div class="conhecimento-header">
+                        <i class="fab fa-js"></i>
+                        <h3>Javascript</h3>
+                    </div>
+                    <div class="conhecimento-text">
+
+                    </div>
+                </div>
+                <div class="conhecimento" data-anime="right">
+                    <div class="conhecimento-header">
+                        <i class="fab fa-react"></i>
+                        <h3>Active Directory</h3>
+                    </div>
+                    <div class="conhecimento-text">
+
+                    </div>
+                </div>
+                <div class="conhecimento" data-anime="left">
+                    <div class="conhecimento-header">
+                        <i class="fab fa-github"></i>
+                        <h3>Git et Github</h3>
+                    </div>
+                    <div class="conhecimento-text">
+
+                    </div>
+                </div>
+                <div class="conhecimento" data-anime="right">
+                    <div class="conhecimento-header">
+                        <i class="fab fa-python"></i>
+                        <h3>Python</h3>
+                    </div>
+                    <div class="conhecimento-text">
+
+                    </div>
+                </div>
+                <div class="imagemFundo">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+        </section>
+        <section class="sessao-projetos" id="projetos">
+            <div class="projetos-header">
+                <h1>Projets</h1>
+            </div>
+            <div class="cards">
+                <div class="card" data-anime="up">
+                    <div class="card-img-wrapper">
+                        <img src="./media/proj1.jpg" alt="">
+                    </div>
+                    <div class="background">
+                        <div class="card-info">
+                            <h2>projet 1</h2>
+                            <h3>Vpn</h3>
+                            <button class="ButtonSend" onclick="openModal('vpnModal')">En savoir plus</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" data-anime="up">
+                    <div class="card-img-wrapper">
+                        <img src="./media/proj2.jpg" alt="">
+                    </div>
+                    <div class="background">
+                        <div class="card-info">
+                            <h2>projet 2</h2>
+                            <h3>...</h3>
+
+                            <button class="ButtonSend">En savoir plus</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" data-anime="up">
+                    <div class="card-img-wrapper">
+                        <img src="./media/proj3.jpg" alt="">
+                    </div>
+                    <div class="background">
+                        <div class="card-info">
+                            <h2>projet 3</h2>
+                            <h3>...</h3>
+                            <button class="ButtonSend">En savoir plus</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" data-anime="up">
+                    <div class="card-img-wrapper">
+                        <img src="./media/proj4.jpg" alt="">
+                    </div>
+                    <div class="background">
+                        <div class="card-info">
+                            <h2>projet 4</h2>
+                            <h3>...</h3>
+                            <button class="ButtonSend">En savoir plus</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="section-budget" id="orcamento">
+            <div class="box"></div>
+            <div class="budget-wrapper">
+                <div class="header-budget" data-anime="left">
+                    <h1>Demandez votre devis</h1>
+                </div>
+
+                <form class="form-budget">
+
+                    <div class="qtde-page" data-anime="right">
+                        <label for="qtde">Nombre de produis :</label>
+                        <input type="number" name="qtde" id="qtde" min="1" max="100"> <br /><br />
+                        <label for="js">J'ai besoin d'un Vpn:</label>
+                        <input class="check" checked="" type="checkbox" name="js" id="js"> <br /><br /><br />
+                    </div>
+
+                    <div class="group-layout" data-anime="up">
+                        <label>Maquette</label>
+                        <div>
+                            <input type="radio" name="layout" id="layout-sim">
+                            <label for="layout-sim">Oui, j'ai besoin d'une maquette</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="layout" id="layout-nao">
+                            <label for="layout-não">Non, je n'ai pas besoin de maquette</label>
+                        </div><br />
+
+                        <div>
+                            <label for="prazo">Délai</label>
+                            <input type="range" name="prazo" id="prazo" min="1" max="10">
+                        </div>
+
+                        <div class="btn">
+                            <button type="submit" id="envio-form-orc" class="ButtonCustom">envoyer</button>
+                        </div>
+
+                        <label id="preco"> 0,00 €</label>
+
+                    </div>
+
+                </form>
+        </section>
+
+    </div>
+    <script src="./script.js"></script>
+   
+</body>
+
+</html> <div class="barre-outils-mobile">
+        <nav>
+            <a href="#" class="outil-link"><i class="fas fa-home"></i><span>Accueil</span></a>
+            <a href="#conhecimentos" class="outil-link"><i class="fas fa-cogs"></i><span>Compétences</span></a>
+            <a href="#projetos" class="outil-link"><i class="fas fa-folder-open"></i><span>Projets</span></a>
+            <a href="#orcamento" class="outil-link"><i class="fas fa-euro-sign"></i><span>Devis</span></a>
+        </nav>
+    </div>
+
+<div id="vpnModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('vpnModal')">&times;</span>
+        <iframe 
+            src="./docs/Fiche_Projet_VPN_OpenVPN.pdf" 
+            type="application/pdf"
+            width="100%" 
+            height="600px">
+            <p>Votre navigateur ne supporte pas l'affichage des PDF. 
+                <a href="./docs/Fiche_Projet_VPN_OpenVPN.pdf">Cliquez ici pour télécharger le PDF</a>
+            </p>
+        </iframe>
+    </div>
+</div>
