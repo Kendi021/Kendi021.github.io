@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Portfolio - Kendi Cadet",
+    "short_name": "Kendi Cadet",
     "icons": [
         {
             "src": "images/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
+    "theme_color": "#2b77ff",
+    "background_color": "#070b14",
     "display": "standalone"
 }
