@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Fiche projet Active Directory — déploiement d'un domaine ent-bts.local sous Windows Server (BTS SIO SISR).">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap">
+    <title>Fiche projet — Active Directory ENT-BTS</title>
+    <style>
+        :root {
+            --bg: #070b14;
+            --surface: #0d1524;
+            --surface-2: #111c2c;
+            --text: #eef6ff;
+            --muted: #9ab0c9;
+            --accent: #2b77ff;
+            --accent-2: #00c2ff;
+            --accent-3: #1de4a3;
+            --border: rgba(126, 163, 204, 0.22);
+            --code-bg: #0a1018;
+            --radius: 16px;
+            --font-main: "Archivo", "Segoe UI", sans-serif;
+            --font-title: "Space Grotesk", "Segoe UI", sans-serif;
+            --font-mono: "JetBrains Mono", monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text);
+            line-height: 1.7;
+            background:
+                radial-gradient(circle at top left, rgba(0, 194, 255, 0.12), transparent 35%),
+                radial-gradient(circle at top right, rgba(43, 119, 255, 0.14), transparent 32%),
+                linear-gradient(180deg, #050811 0%, #07101b 38%, #0b1220 100%);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .wrap {
+            width: min(100%, 980px);
+            margin: 0 auto;
+            padding: 3rem 1.3rem 5rem;
+        }
+
+        .doc-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.6rem;
+            margin-bottom: 2.2rem;
+        }
+
+        .kicker {
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.78rem;
+            color: var(--accent-2);
+            margin-bottom: 0.8rem;
+        }
+
+        h1 {
+            font-family: var(--font-title);
+            font-size: clamp(1.9rem, 4vw, 2.8rem);
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.8rem;
+        }
+
+        .lead {
+            color: var(--muted);
+            max-width: 70ch;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 2rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--accent-2);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            background: rgba(0, 194, 255, 0.1);
+        }
+
+        h2 {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            margin: 2.6rem 0 1rem;
+            padding-top: 1.4rem;
+            border-top: 1px dashed var(--border);
+        }
+
+        h2 .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            margin-right: 0.6rem;
+            border-radius: 8px;
+            background: linear-gradient(120deg, var(--accent), var(--accent-2));
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        h3 {
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.6rem;
+            color: var(--accent-2);
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #dce8f6;
+        }
+
+        ul,
+        ol {
+            margin: 0 0 1.1rem 1.3rem;
+            color: #dce8f6;
+        }
+
+        li {
+            margin-bottom: 0.45rem;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.86em;
+            background: rgba(0, 194, 255, 0.12);
+            color: #b8e6ff;
+            padding: 0.12rem 0.4rem;
+            border-radius: 5px;
+        }
+
+        pre {
+            position: relative;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent-3);
+            border-radius: 10px;
+            padding: 1.1rem 1.2rem;
+            overflow-x: auto;
+            margin: 0 0 1.3rem;
+        }
+
+        pre code {
+            background: none;
+            color: #cfe6ff;
+            padding: 0;
+            font-size: 0.84rem;
+            line-height: 1.65;
+            white-space: pre;
+        }
+
+        pre .cmt {
+            color: #5b7596;
+        }
+
+        .pill {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #c8f3ff;
+            background: rgba(0, 194, 255, 0.14);
+            border: 1px solid rgba(0, 194, 255, 0.22);
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 0 1.4rem;
+            font-size: 0.92rem;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--accent-2);
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        td code {
+            white-space: nowrap;
+        }
+
+        .note {
+            display: flex;
+            gap: 0.8rem;
+            background: rgba(29, 228, 163, 0.08);
+            border: 1px solid rgba(29, 228, 163, 0.25);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem;
+            margin: 0 0 1.4rem;
+            color: #d7f6ea;
+        }
+
+        .note.warn {
+            background: rgba(255, 189, 46, 0.08);
+            border-color: rgba(255, 189, 46, 0.3);
+            color: #ffe7b3;
+        }
+
+        .note::before {
+            content: "i";
+            flex-shrink: 0;
+            width: 1.6rem;
+            height: 1.6rem;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--accent-3);
+            color: #04231a;
+            font-weight: 700;
+            font-family: var(--font-title);
+        }
+
+        .note.warn::before {
+            content: "!";
+            background: #ffbd2e;
+            color: #3a2a00;
+        }
+
+        .params {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.2rem 1.4rem;
+            margin-bottom: 2rem;
+        }
+
+        .doc-footer {
+            margin-top: 3rem;
+            padding-top: 1.4rem;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+            }
+
+            pre,
+            .params,
+            .note {
+                border-color: #ccc;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <a class="back-link" href="./index.html#projets">&larr; Retour au portfolio</a>
+
+        <header class="doc-header">
+            <p class="kicker">Fiche projet · BTS SIO SISR</p>
+            <h1>Déploiement Active Directory — ENT-BTS</h1>
+            <p class="lead">Mise en place pas à pas d'un domaine <code>ent-bts.local</code> sur un serveur
+                Windows Server 2016/2019, avec création automatisée de l'annuaire (utilisateurs, groupes,
+                unités d'organisation), stratégies de groupe, sécurité et sauvegarde. Projet réalisé en
+                environnement de formation (machine virtuelle).</p>
+        </header>
+
+        <h2>Contexte de l'entreprise</h2>
+        <p>L'entreprise fictive <strong>ENT-BTS</strong> souhaite centraliser la gestion de ses comptes et de
+            ses postes. On installe un contrôleur de domaine unique qui jouera aussi les rôles DNS et DHCP.</p>
+
+        <div class="params">
+            <h3 style="margin-top:0;">Paramètres à personnaliser</h3>
+            <p>Toutes ces valeurs se modifient en haut des scripts. Adapte-les à ton labo si besoin.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Élément</th>
+                        <th>Valeur d'exemple</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Nom du serveur</td>
+                        <td><code>SRV-AD01</code></td>
+                    </tr>
+                    <tr>
+                        <td>Domaine Active Directory</td>
+                        <td><code>ent-bts.local</code></td>
+                    </tr>
+                    <tr>
+                        <td>Nom NetBIOS</td>
+                        <td><code>ENT-BTS</code></td>
+                    </tr>
+                    <tr>
+                        <td>IP fixe du serveur</td>
+                        <td><code>192.168.10.10 / 24</code></td>
+                    </tr>
+                    <tr>
+                        <td>Passerelle</td>
+                        <td><code>192.168.10.1</code></td>
+                    </tr>
+                    <tr>
+                        <td>Étendue DHCP</td>
+                        <td><code>192.168.10.100 → 192.168.10.200</code></td>
+                    </tr>
+                    <tr>
+                        <td>Groupes</td>
+                        <td>RH, IT, Marketing, Ventes, Direction</td>
+                    </tr>
+                    <tr>
+                        <td>Utilisateurs</td>
+                        <td>~30 comptes (import CSV)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="note warn">
+            <div><strong>Environnement de formation uniquement.</strong> Le domaine <code>.local</code> et ces
+                réglages sont volontairement simples : ne pas utiliser en production réelle. Exécute chaque
+                script PowerShell <strong>en administrateur</strong>.</div>
+        </div>
+
+        <h3>Prérequis</h3>
+        <ul>
+            <li>Une VM <strong>Windows Server 2016 ou 2019</strong> (Hyper-V, VirtualBox ou VMware).</li>
+            <li>Un compte <strong>Administrateur local</strong> et un mot de passe défini.</li>
+            <li>Une carte réseau en mode « réseau interne » ou « hôte uniquement » pour le labo.</li>
+            <li>Console <strong>PowerShell ouverte en tant qu'administrateur</strong>.</li>
+        </ul>
+
+        <!-- PIÈCE 1 -->
+        <h2><span class="num">1</span> Création du domaine</h2>
+        <p>On fixe l'adresse IP du serveur, on le renomme, puis on installe le rôle Active Directory et on le
+            promeut en contrôleur de domaine. C'est la « fondation » du projet.</p>
+
+        <h3>1.1 — Adresse IP fixe et DNS</h3>
+        <p>Un contrôleur de domaine doit avoir une IP fixe et pointer son DNS vers lui-même.</p>
+        <pre><code><span class="cmt"># Paramètres réseau — à adapter</span>
+$IP        = "192.168.10.10"
+$Prefixe   = 24
+$Passerelle = "192.168.10.1"
+$Interface = (Get-NetAdapter | Where-Object Status -eq "Up").Name
+
+<span class="cmt"># Appliquer l'IP fixe</span>
+New-NetIPAddress -InterfaceAlias $Interface -IPAddress $IP `
+    -PrefixLength $Prefixe -DefaultGateway $Passerelle
+
+<span class="cmt"># DNS = le serveur lui-même (obligatoire pour un DC)</span>
+Set-DnsClientServerAddress -InterfaceAlias $Interface -ServerAddresses $IP</code></pre>
+
+        <h3>1.2 — Renommer le serveur</h3>
+        <pre><code>Rename-Computer -NewName "SRV-AD01" -Force
+Restart-Computer   <span class="cmt"># Redémarrage nécessaire</span></code></pre>
+
+        <h3>1.3 — Installer le rôle AD DS</h3>
+        <pre><code>Install-WindowsFeature AD-Domain-Services -IncludeManagementTools</code></pre>
+
+        <h3>1.4 — Créer la forêt et promouvoir le contrôleur</h3>
+        <p>Cette commande crée le domaine <code>ent-bts.local</code> et installe automatiquement le DNS.</p>
+        <pre><code>Import-Module ADDSDeployment
+
+Install-ADDSForest `
+    -DomainName "ent-bts.local" `
+    -DomainNetbiosName "ENT-BTS" `
+    -ForestMode "WinThreshold" `
+    -DomainMode "WinThreshold" `
+    -InstallDns:$true `
+    -Force:$true
+<span class="cmt"># Le serveur redémarre tout seul à la fin.</span></code></pre>
+
+        <h3>Vérification</h3>
+        <pre><code>Get-ADDomain         <span class="cmt"># Doit afficher ent-bts.local</span>
+Get-ADDomainController <span class="cmt"># Doit afficher SRV-AD01</span></code></pre>
+
+        <!-- PIÈCE 2 -->
+        <h2><span class="num">2</span> Services réseau (DNS &amp; DHCP)</h2>
+        <p>Le DNS a déjà été installé avec l'AD. On ajoute maintenant le serveur DHCP qui distribuera
+            automatiquement les adresses IP aux postes clients.</p>
+
+        <h3>2.1 — Vérifier le DNS</h3>
+        <pre><code>Get-DnsServerZone   <span class="cmt"># La zone ent-bts.local doit être présente</span></code></pre>
+
+        <h3>2.2 — Installer et configurer le DHCP</h3>
+        <pre><code><span class="cmt"># Paramètres DHCP — à adapter</span>
+$Debut   = "192.168.10.100"
+$Fin     = "192.168.10.200"
+$Masque  = "255.255.255.0"
+$Routeur = "192.168.10.1"
+$DNS     = "192.168.10.10"
+
+<span class="cmt"># Installer le rôle</span>
+Install-WindowsFeature DHCP -IncludeManagementTools
+
+<span class="cmt"># Créer l'étendue (la plage d'adresses)</span>
+Add-DhcpServerv4Scope -Name "LAN-ENT-BTS" `
+    -StartRange $Debut -EndRange $Fin -SubnetMask $Masque
+
+<span class="cmt"># Options : passerelle + serveur DNS</span>
+Set-DhcpServerv4OptionValue -Router $Routeur -DnsServer $DNS `
+    -DnsDomain "ent-bts.local"
+
+<span class="cmt"># Autoriser le serveur DHCP dans l'AD</span>
+Add-DhcpServerInDC -DnsName "SRV-AD01.ent-bts.local" -IPAddress $DNS</code></pre>
+
+        <h3>Vérification</h3>
+        <pre><code>Get-DhcpServerv4Scope   <span class="cmt"># Affiche l'étendue 192.168.10.100-200</span></code></pre>
+
+        <!-- PIÈCE 3 -->
+        <h2><span class="num">3</span> Unités d'organisation, groupes &amp; utilisateurs</h2>
+        <p>On organise l'annuaire : une <strong>OU</strong> par service, un <strong>groupe</strong> par service,
+            puis on importe les comptes depuis un fichier CSV.</p>
+
+        <h3>3.1 — Créer les unités d'organisation (OU)</h3>
+        <pre><code>$Base = "DC=ent-bts,DC=local"
+
+<span class="cmt"># OU parente de l'entreprise</span>
+New-ADOrganizationalUnit -Name "ENT-BTS" -Path $Base `
+    -ProtectedFromAccidentalDeletion $true
+
+<span class="cmt"># Une OU par service</span>
+$Services = "RH","IT","Marketing","Ventes","Direction"
+foreach ($s in $Services) {
+    New-ADOrganizationalUnit -Name $s -Path "OU=ENT-BTS,$Base" `
+        -ProtectedFromAccidentalDeletion $true
+}</code></pre>
+
+        <h3>3.2 — Créer les groupes</h3>
+        <pre><code>foreach ($s in $Services) {
+    New-ADGroup -Name "GG_$s" -GroupScope Global -GroupCategory Security `
+        -Path "OU=$s,OU=ENT-BTS,$Base" `
+        -Description "Groupe du service $s"
+}</code></pre>
+
+        <h3>3.3 — Préparer le fichier des utilisateurs</h3>
+        <p>Crée un fichier <code>utilisateurs.csv</code> (séparateur point-virgule) à côté du script :</p>
+        <pre><code>Prenom;Nom;Login;Service
+Marie;Durand;mdurand;RH
+Paul;Martin;pmartin;IT
+Sophie;Bernard;sbernard;Marketing
+Lucas;Petit;lpetit;Ventes
+Emma;Robert;erobert;Direction
+<span class="cmt"># ... ajoute autant de lignes que nécessaire (~30)</span></code></pre>
+
+        <h3>3.4 — Créer les comptes depuis le CSV</h3>
+        <pre><code>$Base = "DC=ent-bts,DC=local"
+$MotDePasse = ConvertTo-SecureString "Azerty2026!" -AsPlainText -Force
+
+Import-Csv ".\utilisateurs.csv" -Delimiter ";" | ForEach-Object {
+    $ou = "OU=$($_.Service),OU=ENT-BTS,$Base"
+
+    New-ADUser `
+        -Name "$($_.Prenom) $($_.Nom)" `
+        -GivenName $_.Prenom `
+        -Surname $_.Nom `
+        -SamAccountName $_.Login `
+        -UserPrincipalName "$($_.Login)@ent-bts.local" `
+        -Path $ou `
+        -AccountPassword $MotDePasse `
+        -ChangePasswordAtLogon $true `
+        -Enabled $true
+
+    <span class="cmt"># Ajouter l'utilisateur au groupe de son service</span>
+    Add-ADGroupMember -Identity "GG_$($_.Service)" -Members $_.Login
+}</code></pre>
+
+        <div class="note">
+            <div>Le paramètre <code>-ChangePasswordAtLogon $true</code> oblige l'utilisateur à changer son
+                mot de passe à la première connexion : une bonne pratique simple.</div>
+        </div>
+
+        <h3>Vérification</h3>
+        <pre><code>Get-ADUser -Filter * -SearchBase "OU=ENT-BTS,DC=ent-bts,DC=local" | Measure-Object
+Get-ADGroupMember -Identity "GG_IT"</code></pre>
+
+        <!-- PIÈCE 4 -->
+        <h2><span class="num">4</span> Stratégies de groupe (GPO)</h2>
+        <p>Une <strong>GPO</strong> applique des règles automatiquement aux utilisateurs/postes d'une OU.
+            Exemple simple : verrouiller la session après 10 minutes d'inactivité.</p>
+        <pre><code>$Base = "DC=ent-bts,DC=local"
+
+<span class="cmt"># Créer la GPO</span>
+$gpo = New-GPO -Name "Verrouillage session" `
+    -Comment "Verrouille l'écran après 10 min"
+
+<span class="cmt"># Régler le délai d'inactivité (600 s = 10 min)</span>
+Set-GPRegistryValue -Name "Verrouillage session" `
+    -Key "HKCU\Software\Policies\Microsoft\Windows\Control Panel\Desktop" `
+    -ValueName "ScreenSaveTimeOut" -Type String -Value "600"
+
+<span class="cmt"># Lier la GPO à l'OU de l'entreprise</span>
+New-GPLink -Name "Verrouillage session" -Target "OU=ENT-BTS,$Base"</code></pre>
+
+        <h3>Vérification</h3>
+        <pre><code>Get-GPO -All | Select-Object DisplayName
+gpresult /r   <span class="cmt"># Sur un poste client, pour voir les GPO appliquées</span></code></pre>
+
+        <!-- PIÈCE 5 -->
+        <h2><span class="num">5</span> Sécurité (politique de mot de passe)</h2>
+        <p>On renforce la politique de mots de passe du domaine : longueur minimale, complexité et expiration.</p>
+        <pre><code>Set-ADDefaultDomainPasswordPolicy -Identity "ent-bts.local" `
+    -MinPasswordLength 8 `
+    -ComplexityEnabled $true `
+    -MaxPasswordAge "90.00:00:00" `
+    -PasswordHistoryCount 5 `
+    -LockoutThreshold 5 `
+    -LockoutDuration "00:15:00"</code></pre>
+        <ul>
+            <li><strong>8 caractères minimum</strong> et complexité activée (majuscule, chiffre, etc.).</li>
+            <li>Mot de passe à renouveler tous les <strong>90 jours</strong>.</li>
+            <li><strong>Verrouillage du compte</strong> après 5 essais ratés, pendant 15 minutes.</li>
+        </ul>
+
+        <h3>Vérification</h3>
+        <pre><code>Get-ADDefaultDomainPasswordPolicy</code></pre>
+
+        <!-- PIÈCE 6 -->
+        <h2><span class="num">6</span> Sauvegarde de l'Active Directory</h2>
+        <p>On installe l'outil de sauvegarde Windows, puis on sauvegarde l'<strong>état système</strong> qui
+            contient toute la base de l'annuaire (fichier <code>NTDS.dit</code>).</p>
+        <pre><code><span class="cmt"># Installer la fonctionnalité de sauvegarde</span>
+Install-WindowsFeature Windows-Server-Backup
+
+<span class="cmt"># Sauvegarder l'état système vers le disque E: (à adapter)</span>
+wbadmin start systemstatebackup -backupTarget:E: -quiet</code></pre>
+
+        <div class="note">
+            <div>L'<strong>état système</strong> inclut l'AD, le registre et la configuration du serveur :
+                c'est la sauvegarde clé pour restaurer un contrôleur de domaine.</div>
+        </div>
+
+        <h3>Vérification</h3>
+        <pre><code>wbadmin get versions   <span class="cmt"># Liste les sauvegardes disponibles</span></code></pre>
+
+        <h2>Récapitulatif</h2>
+        <p>À la fin du projet, l'infrastructure ENT-BTS dispose de :</p>
+        <ul>
+            <li>Un contrôleur de domaine <code>SRV-AD01</code> sur <code>ent-bts.local</code> (AD DS + DNS).</li>
+            <li>Un serveur DHCP distribuant la plage <code>192.168.10.100-200</code>.</li>
+            <li>5 OU, 5 groupes et ~30 utilisateurs organisés par service.</li>
+            <li>Une GPO de verrouillage de session liée à l'entreprise.</li>
+            <li>Une politique de mot de passe renforcée et une sauvegarde de l'AD.</li>
+        </ul>
+
+        <p><span class="pill">Compétences BTS SISR</span> Administration Windows Server · Active Directory ·
+            DNS/DHCP · PowerShell · GPO · sécurité &amp; sauvegarde.</p>
+
+        <footer class="doc-footer">
+            Projet de formation — Kendi Cadet · BTS SIO SISR ·
+            <a href="./index.html#projets" style="color:var(--accent-2);">Retour au portfolio</a>
+        </footer>
+    </div>
+</body>
+
+</html>

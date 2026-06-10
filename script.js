@@ -73,19 +73,38 @@ if (animatedElements.length) {
     window.addEventListener("scroll", debounce(animationScroll, 10));
 }
 
+// Élément ayant le focus avant ouverture de la modale (pour le restaurer ensuite)
+let elementFocusAvantModale = null;
+
 function ouvrirModale(idModale) {
     const modale = document.getElementById(idModale);
-    if (modale) modale.style.display = "block";
+    if (!modale) return;
+
+    elementFocusAvantModale = document.activeElement;
+    modale.style.display = "block";
+    document.body.style.overflow = "hidden"; // empêche le scroll de l'arrière-plan
+
+    const boutonFermer = modale.querySelector(".fermer-modale");
+    if (boutonFermer) boutonFermer.focus();
 }
 
 function fermerModale(idModale) {
     const modale = document.getElementById(idModale);
-    if (modale) modale.style.display = "none";
+    if (!modale) return;
+
+    modale.style.display = "none";
+    document.body.style.overflow = ""; // rétablit le scroll
+
+    if (elementFocusAvantModale) {
+        elementFocusAvantModale.focus();
+        elementFocusAvantModale = null;
+    }
 }
 
+// Clic sur le fond (overlay) de la modale : on ferme
 window.addEventListener("click", (event) => {
-    if (event.target.className === "modale") {
-        event.target.style.display = "none";
+    if (event.target.classList && event.target.classList.contains("modale")) {
+        fermerModale(event.target.id);
     }
 });
 
@@ -93,7 +112,7 @@ window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
         setMenuState(false);
         document.querySelectorAll(".modale").forEach((modal) => {
-            modal.style.display = "none";
+            if (modal.style.display === "block") fermerModale(modal.id);
         });
     }
 });
@@ -223,6 +242,9 @@ hiddenInput.addEventListener("keydown", (e) => {
 });
 
 function processCommand(cmd) {
+    // Entrée à vide : on ne fait rien (évitait d'afficher "ls" par correspondance partielle)
+    if (!cmd || !cmd.trim()) return;
+
     const historyLine = document.createElement("div");
     historyLine.className = "line";
     historyLine.innerHTML = `
@@ -290,64 +312,109 @@ function runCommand(text) {
 }
 
 // ================================================
-// TERMINAL DE DÉMO VPN
+// TERMINAUX DE DÉMO SIMULÉS (VPN & Active Directory)
 // ================================================
-
-// ==========================================
-// VPN Demo Terminal
-// ==========================================
 (function () {
-    const STEPS = [
-        { type: 'cmd', text: 'sudo bash auto-vpn.sh', delay: 600 },
-        { type: 'comment', text: '# angristan/openvpn-install — déploiement auto', delay: 700 },
-        { type: 'blank', text: '', delay: 200 },
-        { type: 'info', text: '[•] Détection de l\'IP publique...', delay: 900 },
-        { type: 'data', text: '    Adresse IP : 203.0.113.42', delay: 300 },
-        { type: 'blank', text: '', delay: 150 },
-        { type: 'info', text: '[•] Téléchargement de openvpn-install.sh...', delay: 1000 },
-        { type: 'data', text: '    [████████████████████] 100%', delay: 800 },
-        { type: 'ok', text: '[✓] Script téléchargé', delay: 350 },
-        { type: 'blank', text: '', delay: 150 },
-        { type: 'info', text: '[•] Protocole   : UDP — Port : 1194', delay: 500 },
-        { type: 'info', text: '[•] DNS         : Système', delay: 350 },
-        { type: 'info', text: '[•] Client      : client-admin', delay: 350 },
-        { type: 'info', text: '[•] Chiffrement : AES-256-GCM / TLS 1.3', delay: 350 },
-        { type: 'blank', text: '', delay: 150 },
-        { type: 'info', text: '[•] Installation des paquets...', delay: 1300 },
-        { type: 'data', text: '    openvpn ...................... ok', delay: 280 },
-        { type: 'data', text: '    easy-rsa ..................... ok', delay: 280 },
-        { type: 'data', text: '    iptables ..................... ok', delay: 280 },
-        { type: 'blank', text: '', delay: 150 },
-        { type: 'info', text: '[•] Génération de l\'infrastructure PKI...', delay: 1200 },
-        { type: 'ok', text: '[✓] Autorité de certification créée (CA)', delay: 450 },
-        { type: 'ok', text: '[✓] Certificat serveur signé', delay: 400 },
-        { type: 'ok', text: '[✓] Clé Diffie-Hellman générée', delay: 400 },
-        { type: 'blank', text: '', delay: 150 },
-        { type: 'info', text: '[•] Activation du service systemd...', delay: 700 },
-        { type: 'ok', text: '[✓] openvpn@server.service démarré', delay: 350 },
-        { type: 'blank', text: '', delay: 150 },
-        { type: 'info', text: '[•] Génération du profil client...', delay: 900 },
-        { type: 'ok', text: '[✓] /root/client-admin.ovpn créé', delay: 500 },
-        { type: 'blank', text: '', delay: 200 },
-        { type: 'success', text: '╔══════════════════════════════════════╗', delay: 120 },
-        { type: 'success', text: '║   DÉPLOIEMENT TERMINÉ AVEC SUCCÈS   ║', delay: 80 },
-        { type: 'success', text: '╚══════════════════════════════════════╝', delay: 80 },
-    ];
+    // Étapes de chaque démo : type de ligne (couleur) + texte + délai (ms) avant affichage
+    const DEMOS = {
+        vpn: [
+            { type: 'cmd', text: 'sudo bash auto-vpn.sh', delay: 600 },
+            { type: 'comment', text: '# angristan/openvpn-install — déploiement auto', delay: 700 },
+            { type: 'blank', text: '', delay: 200 },
+            { type: 'info', text: '[•] Détection de l\'IP publique...', delay: 900 },
+            { type: 'data', text: '    Adresse IP : 203.0.113.42', delay: 300 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'info', text: '[•] Téléchargement de openvpn-install.sh...', delay: 1000 },
+            { type: 'data', text: '    [████████████████████] 100%', delay: 800 },
+            { type: 'ok', text: '[✓] Script téléchargé', delay: 350 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'info', text: '[•] Protocole   : UDP — Port : 1194', delay: 500 },
+            { type: 'info', text: '[•] DNS         : Système', delay: 350 },
+            { type: 'info', text: '[•] Client      : client-admin', delay: 350 },
+            { type: 'info', text: '[•] Chiffrement : AES-256-GCM / TLS 1.3', delay: 350 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'info', text: '[•] Installation des paquets...', delay: 1300 },
+            { type: 'data', text: '    openvpn ...................... ok', delay: 280 },
+            { type: 'data', text: '    easy-rsa ..................... ok', delay: 280 },
+            { type: 'data', text: '    iptables ..................... ok', delay: 280 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'info', text: '[•] Génération de l\'infrastructure PKI...', delay: 1200 },
+            { type: 'ok', text: '[✓] Autorité de certification créée (CA)', delay: 450 },
+            { type: 'ok', text: '[✓] Certificat serveur signé', delay: 400 },
+            { type: 'ok', text: '[✓] Clé Diffie-Hellman générée', delay: 400 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'info', text: '[•] Activation du service systemd...', delay: 700 },
+            { type: 'ok', text: '[✓] openvpn@server.service démarré', delay: 350 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'info', text: '[•] Génération du profil client...', delay: 900 },
+            { type: 'ok', text: '[✓] /root/client-admin.ovpn créé', delay: 500 },
+            { type: 'blank', text: '', delay: 200 },
+            { type: 'success', text: '╔══════════════════════════════════════╗', delay: 120 },
+            { type: 'success', text: '║   DÉPLOIEMENT TERMINÉ AVEC SUCCÈS    ║', delay: 80 },
+            { type: 'success', text: '╚══════════════════════════════════════╝', delay: 80 },
+        ],
 
-    let running = false;
+        ad: [
+            { type: 'cmd', text: 'Install-WindowsFeature AD-Domain-Services -IncludeManagementTools', delay: 600 },
+            { type: 'comment', text: '# Installation du rôle Active Directory (AD DS)', delay: 650 },
+            { type: 'ok', text: '[✓] Rôle AD DS installé', delay: 500 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'cmd', text: 'Install-ADDSForest -DomainName "ent-bts.local" -DomainNetbiosName "ENT-BTS"', delay: 800 },
+            { type: 'info', text: '[•] Création de la forêt et promotion du contrôleur...', delay: 1100 },
+            { type: 'data', text: '    Niveau fonctionnel : Windows Server 2016', delay: 320 },
+            { type: 'data', text: '    Serveur DNS : installé automatiquement', delay: 320 },
+            { type: 'ok', text: '[✓] SRV-AD01 est contrôleur de domaine', delay: 600 },
+            { type: 'blank', text: '', delay: 200 },
+            { type: 'cmd', text: 'Install-WindowsFeature DHCP -IncludeManagementTools', delay: 600 },
+            { type: 'ok', text: '[✓] Rôle DHCP installé', delay: 400 },
+            { type: 'cmd', text: 'Add-DhcpServerv4Scope -StartRange 192.168.10.100 -EndRange 192.168.10.200', delay: 650 },
+            { type: 'ok', text: '[✓] Étendue DHCP active (192.168.10.100-200)', delay: 450 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'cmd', text: 'New-ADOrganizationalUnit : RH, IT, Marketing, Ventes, Direction', delay: 650 },
+            { type: 'info', text: '[•] Création des unités d\'organisation...', delay: 700 },
+            { type: 'ok', text: '[✓] 5 OU créées sous OU=ENT-BTS', delay: 450 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'cmd', text: 'New-ADGroup -GroupScope Global  (x5)', delay: 500 },
+            { type: 'ok', text: '[✓] GG_RH, GG_IT, GG_Marketing, GG_Ventes, GG_Direction', delay: 500 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'cmd', text: 'Import-Csv utilisateurs.csv | ForEach-Object { New-ADUser ... }', delay: 800 },
+            { type: 'info', text: '[•] Création des comptes utilisateurs...', delay: 1000 },
+            { type: 'data', text: '    [████████████████████] 30 / 30', delay: 800 },
+            { type: 'ok', text: '[✓] 30 utilisateurs créés et placés dans leurs OU', delay: 500 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'cmd', text: 'New-GPO -Name "Verrouillage session" | New-GPLink', delay: 600 },
+            { type: 'ok', text: '[✓] GPO liée à OU=ENT-BTS', delay: 450 },
+            { type: 'cmd', text: 'Set-ADDefaultDomainPasswordPolicy -MinPasswordLength 8', delay: 550 },
+            { type: 'data', text: '    Complexité : activée — Longueur min : 8', delay: 350 },
+            { type: 'ok', text: '[✓] Politique de mot de passe appliquée', delay: 450 },
+            { type: 'blank', text: '', delay: 150 },
+            { type: 'cmd', text: 'wbadmin start systemstatebackup -backupTarget:E:', delay: 700 },
+            { type: 'info', text: '[•] Sauvegarde de l\'état système (AD)...', delay: 1200 },
+            { type: 'ok', text: '[✓] Sauvegarde de l\'annuaire terminée', delay: 500 },
+            { type: 'blank', text: '', delay: 200 },
+            { type: 'success', text: '╔══════════════════════════════════════╗', delay: 120 },
+            { type: 'success', text: '║   DOMAINE ent-bts.local OPÉRATIONNEL ║', delay: 80 },
+            { type: 'success', text: '╚══════════════════════════════════════╝', delay: 80 },
+        ],
+    };
 
-    function runVpnDemo() {
-        const output = document.getElementById('vpnDemoOutput');
-        const playBtn = document.getElementById('vpnDemoPlay');
-        if (!output || !playBtn || running) return;
+    const enCours = new Set(); // démos en cours de lecture (évite les relances multiples)
 
-        running = true;
+    // Joue une démo dans le terminal du bouton cliqué (data-demo = "vpn" | "ad")
+    function lancerDemo(playBtn) {
+        const cle = playBtn.dataset.demo;
+        const steps = DEMOS[cle];
+        const terminal = playBtn.closest('.vpn-terminal');
+        const output = terminal ? terminal.querySelector('.vpn-terminal-body') : null;
+        if (!steps || !output || enCours.has(cle)) return;
+
+        enCours.add(cle);
         output.innerHTML = '';
         playBtn.disabled = true;
         playBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> En cours...';
 
         let cumDelay = 0;
-        STEPS.forEach(function (step, index) {
+        steps.forEach(function (step, index) {
             cumDelay += step.delay;
             setTimeout(function () {
                 const line = document.createElement('span');
@@ -356,8 +423,8 @@ function runCommand(text) {
                 output.appendChild(line);
                 output.scrollTop = output.scrollHeight;
 
-                if (index === STEPS.length - 1) {
-                    running = false;
+                if (index === steps.length - 1) {
+                    enCours.delete(cle);
                     playBtn.disabled = false;
                     playBtn.innerHTML = '<i class="fas fa-redo"></i> Rejouer';
                 }
@@ -365,15 +432,18 @@ function runCommand(text) {
         });
     }
 
-    function initVpnTabs() {
+    // Onglets : la bascule est limitée au panneau (.vpn-demo-panel) du bouton cliqué
+    function initOnglets() {
         document.querySelectorAll('.vpn-tab').forEach(function (tab) {
             tab.addEventListener('click', function () {
+                const panel = tab.closest('.vpn-demo-panel');
+                if (!panel) return;
                 const target = tab.dataset.pane;
-                document.querySelectorAll('.vpn-tab').forEach(function (t) {
+                panel.querySelectorAll('.vpn-tab').forEach(function (t) {
                     t.classList.toggle('vpn-tab--active', t === tab);
                     t.setAttribute('aria-selected', String(t === tab));
                 });
-                document.querySelectorAll('.vpn-pane').forEach(function (pane) {
+                panel.querySelectorAll('.vpn-pane').forEach(function (pane) {
                     pane.classList.toggle('vpn-pane--hidden', pane.id !== target);
                 });
             });
@@ -381,14 +451,13 @@ function runCommand(text) {
     }
 
     document.addEventListener('click', function (e) {
-        if (e.target.closest('#vpnDemoPlay')) {
-            runVpnDemo();
-        }
+        const playBtn = e.target.closest('[data-demo]');
+        if (playBtn) lancerDemo(playBtn);
     });
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initVpnTabs);
+        document.addEventListener('DOMContentLoaded', initOnglets);
     } else {
-        initVpnTabs();
+        initOnglets();
     }
 }());
