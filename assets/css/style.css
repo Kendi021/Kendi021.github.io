@@ -1380,6 +1380,10 @@ iframe {
 
     .carte-overlay {
         position: static;
+        display: block;
+        /* annule le height:100% + align-items:flex-end hérités du desktop
+           qui créaient un grand vide au-dessus du texte sur mobile */
+        height: auto;
         padding: 0;
         background: none;
     }
@@ -1405,6 +1409,42 @@ iframe {
     .project-actions>*,
     .project-links>* {
         width: 100%;
+    }
+
+    /* Modale : aucun débordement horizontal sur mobile */
+    .modale {
+        overflow-x: hidden;
+    }
+
+    /* Terminal de démo : les longues commandes s'enroulent au lieu d'être coupées */
+    .vpn-terminal-body {
+        overflow-x: hidden;
+        padding: 0.85rem 0.95rem;
+    }
+
+    .vpn-terminal-body .vpn-line {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    /* Titre du terminal masqué : trop long pour la barre sur petit écran */
+    .vpn-terminal-title {
+        display: none;
+    }
+
+    /* Cartes « À venir » : version compacte (pas de pavé de texte inutile) */
+    .carte--placeholder .wrapper-img-carte,
+    .carte--placeholder .wrapper-img-carte img {
+        height: 96px;
+    }
+
+    .carte--placeholder .info-carte p,
+    .carte--placeholder .project-points {
+        display: none;
+    }
+
+    .carte--placeholder .info-carte {
+        padding: 1rem 1.3rem 1.3rem;
     }
 }
 
@@ -1503,6 +1543,7 @@ iframe {
 .vpn-pane {
     flex: 1;
     min-height: 0;
+    min-width: 0;
 }
 
 .vpn-pane--hidden {
@@ -1513,6 +1554,7 @@ iframe {
     display: flex;
     flex-direction: column;
     height: 470px;
+    min-width: 0;
 }
 
 .vpn-terminal-bar {
