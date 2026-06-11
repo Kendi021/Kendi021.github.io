@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Portfolio de Kendi Cadet, Technicien Support IT et administrateur réseau (BTS SIO SISR).">
+        content="Kendi Cadet, étudiant en BTS SIO SISR en recherche d'alternance en Île-de-France : technicien support informatique, administration systèmes et réseaux (Windows, Linux, Active Directory) et cybersécurité.">
+    <meta name="author" content="Kendi Cadet">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#070b14">
+    <link rel="canonical" href="https://kendi021.github.io/">
     <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
@@ -16,18 +20,40 @@
     <!-- Polices Google Fonts (chargées via <link> plutôt que @import : non bloquant) -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap">
-    <meta property="og:title" content="Portfolio - Kendi Cadet">
+    <meta property="og:title" content="Kendi Cadet — Technicien support IT & systèmes/réseaux | BTS SIO SISR">
     <meta property="og:description"
-        content="Portfolio de Kendi Cadet, Technicien Support IT et administrateur réseau (BTS SIO SISR).">
+        content="Étudiant BTS SIO SISR en recherche d'alternance en Île-de-France : support informatique, administration systèmes et réseaux (Windows/Linux/AD) et cybersécurité.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kendi021.github.io/">
+    <meta property="og:site_name" content="Portfolio de Kendi Cadet">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:image" content="https://kendi021.github.io/assets/images/android-chrome-512x512.png">
+    <meta property="og:image:alt" content="Logo K — Portfolio de Kendi Cadet">
     <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Kendi Cadet — Technicien support IT & systèmes/réseaux | BTS SIO SISR">
+    <meta name="twitter:description"
+        content="Étudiant BTS SIO SISR en recherche d'alternance en Île-de-France : support, systèmes & réseaux, cybersécurité.">
+    <meta name="twitter:image" content="https://kendi021.github.io/assets/images/android-chrome-512x512.png">
+    <!-- Données structurées (Person) pour Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Kendi Cadet",
+      "url": "https://kendi021.github.io/",
+      "jobTitle": "Technicien support informatique et administrateur systèmes et réseaux (étudiant BTS SIO SISR)",
+      "description": "Étudiant en BTS SIO SISR en recherche d'alternance en Île-de-France, orienté support informatique, administration systèmes et réseaux et cybersécurité.",
+      "address": { "@type": "PostalAddress", "addressRegion": "Île-de-France", "addressCountry": "FR" },
+      "knowsAbout": ["Support informatique", "Helpdesk", "Windows Server", "Active Directory", "DNS", "DHCP", "Linux", "Réseaux", "VPN", "Cybersécurité", "PowerShell"],
+      "sameAs": ["https://github.com/Kendi021", "https://www.linkedin.com/in/kendi-cadet"]
+    }
+    </script>
     <!-- Font Awesome (icônes) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- Feuille de style principale -->
     <link rel="stylesheet" href="./assets/css/style.css">
-    <title>Portfolio - Kendi Cadet</title>
+    <title>Kendi Cadet — Alternance BTS SIO SISR | Technicien support & réseaux</title>
 </head>
 
 <body class="preloading">
@@ -52,7 +78,7 @@
         <!-- HEADER / HERO -->
         <header>
             <div class="conteneur-image">
-                <img src="./assets/images/backgroundimg.jpg" alt="Image de fond bureau" fetchpriority="high"
+                <img src="./assets/images/backgroundimg.jpg" alt="Poste de travail informatique — Kendi Cadet, technicien support IT et administrateur systèmes et réseaux (BTS SIO SISR)" fetchpriority="high"
                     decoding="async">
             </div>
             <div class="hero-visuals">
@@ -243,7 +269,7 @@
                 <div class="cartes-projets">
                     <div class="carte" data-animation="haut">
                         <div class="wrapper-img-carte">
-                            <img src="./media/proj1.jpg" alt="Projet OpenVPN sécurisé" loading="lazy">
+                            <img src="./media/proj1.svg" alt="Projet OpenVPN sécurisé : VPN chiffré automatisé sur Linux (cybersécurité réseau)" loading="lazy">
                         </div>
                         <div class="carte-overlay">
                             <div class="info-carte">
@@ -270,7 +296,7 @@
                                     <button class="bouton-voir" onclick="ouvrirModale('vpnModal')">Voir le
                                         projet</button>
                                     <a class="bouton-voir bouton-voir-secondaire"
-                                        href="./docs/Fiche_Projet_VPN_OpenVPN.pdf" target="_blank"
+                                        href="./projet-openvpn.html" target="_blank"
                                         rel="noopener noreferrer">Ouvrir la fiche</a>
                                 </div>
                             </div>
@@ -278,7 +304,7 @@
                     </div>
                     <div class="carte" data-animation="haut">
                         <div class="wrapper-img-carte">
-                            <img src="./media/proj2.jpg" alt="Projet Active Directory ENT-BTS" loading="lazy">
+                            <img src="./media/proj2.svg" alt="Projet Active Directory : domaine Windows Server ent-bts.local avec DNS, DHCP et GPO (BTS SIO SISR)" loading="lazy">
                         </div>
                         <div class="carte-overlay">
                             <div class="info-carte">

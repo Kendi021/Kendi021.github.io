@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Projet OpenVPN pas à pas (BTS SIO SISR) : déploiement d'un serveur VPN OpenVPN sous Ubuntu Server avec PKI Easy-RSA, pare-feu UFW/NAT, chiffrement AES-256-GCM, profil client et sécurisation. Réalisé par Kendi Cadet.">
+    <meta name="author" content="Kendi Cadet">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#070b14">
+    <link rel="canonical" href="https://kendi021.github.io/projet-openvpn.html">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+    <link rel="manifest" href="assets/images/site.webmanifest">
+    <meta property="og:title" content="Projet OpenVPN — Serveur VPN sécurisé sous Linux (BTS SIO SISR)">
+    <meta property="og:description"
+        content="Déploiement pas à pas d'un serveur OpenVPN sous Ubuntu : PKI Easy-RSA, UFW/NAT, AES-256-GCM, profil client .ovpn et sécurisation.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kendi021.github.io/projet-openvpn.html">
+    <meta property="og:site_name" content="Portfolio de Kendi Cadet">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:image" content="https://kendi021.github.io/assets/images/android-chrome-512x512.png">
+    <meta name="twitter:card" content="summary">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap">
+    <title>Projet OpenVPN — Serveur VPN sécurisé sous Linux | BTS SIO SISR</title>
+    <style>
+        :root {
+            --bg: #070b14;
+            --surface: #0d1524;
+            --surface-2: #111c2c;
+            --text: #eef6ff;
+            --muted: #9ab0c9;
+            --accent: #2b77ff;
+            --accent-2: #00c2ff;
+            --accent-3: #1de4a3;
+            --border: rgba(126, 163, 204, 0.22);
+            --code-bg: #0a1018;
+            --radius: 16px;
+            --font-main: "Archivo", "Segoe UI", sans-serif;
+            --font-title: "Space Grotesk", "Segoe UI", sans-serif;
+            --font-mono: "JetBrains Mono", monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text);
+            line-height: 1.7;
+            background:
+                radial-gradient(circle at top left, rgba(0, 194, 255, 0.12), transparent 35%),
+                radial-gradient(circle at top right, rgba(43, 119, 255, 0.14), transparent 32%),
+                linear-gradient(180deg, #050811 0%, #07101b 38%, #0b1220 100%);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .wrap {
+            width: min(100%, 980px);
+            margin: 0 auto;
+            padding: 3rem 1.3rem 5rem;
+        }
+
+        .doc-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.6rem;
+            margin-bottom: 2.2rem;
+        }
+
+        .kicker {
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.78rem;
+            color: var(--accent-2);
+            margin-bottom: 0.8rem;
+        }
+
+        h1 {
+            font-family: var(--font-title);
+            font-size: clamp(1.9rem, 4vw, 2.8rem);
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.8rem;
+        }
+
+        .lead {
+            color: var(--muted);
+            max-width: 70ch;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 2rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--accent-2);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            background: rgba(0, 194, 255, 0.1);
+        }
+
+        h2 {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            margin: 2.6rem 0 1rem;
+            padding-top: 1.4rem;
+            border-top: 1px dashed var(--border);
+        }
+
+        h2 .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            margin-right: 0.6rem;
+            border-radius: 8px;
+            background: linear-gradient(120deg, var(--accent), var(--accent-2));
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        h3 {
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.6rem;
+            color: var(--accent-2);
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #dce8f6;
+        }
+
+        ul,
+        ol {
+            margin: 0 0 1.1rem 1.3rem;
+            color: #dce8f6;
+        }
+
+        li {
+            margin-bottom: 0.45rem;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.86em;
+            background: rgba(0, 194, 255, 0.12);
+            color: #b8e6ff;
+            padding: 0.12rem 0.4rem;
+            border-radius: 5px;
+        }
+
+        pre {
+            position: relative;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent-3);
+            border-radius: 10px;
+            padding: 1.1rem 1.2rem;
+            overflow-x: auto;
+            margin: 0 0 1.3rem;
+        }
+
+        pre code {
+            background: none;
+            color: #cfe6ff;
+            padding: 0;
+            font-size: 0.84rem;
+            line-height: 1.65;
+            white-space: pre;
+        }
+
+        pre .cmt {
+            color: #5b7596;
+        }
+
+        .pill {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #c8f3ff;
+            background: rgba(0, 194, 255, 0.14);
+            border: 1px solid rgba(0, 194, 255, 0.22);
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 0 1.4rem;
+            font-size: 0.92rem;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--accent-2);
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        td code {
+            white-space: nowrap;
+        }
+
+        .note {
+            display: flex;
+            gap: 0.8rem;
+            background: rgba(29, 228, 163, 0.08);
+            border: 1px solid rgba(29, 228, 163, 0.25);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem;
+            margin: 0 0 1.4rem;
+            color: #d7f6ea;
+        }
+
+        .note.warn {
+            background: rgba(255, 189, 46, 0.08);
+            border-color: rgba(255, 189, 46, 0.3);
+            color: #ffe7b3;
+        }
+
+        .note::before {
+            content: "i";
+            flex-shrink: 0;
+            width: 1.6rem;
+            height: 1.6rem;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--accent-3);
+            color: #04231a;
+            font-weight: 700;
+            font-family: var(--font-title);
+        }
+
+        .note.warn::before {
+            content: "!";
+            background: #ffbd2e;
+            color: #3a2a00;
+        }
+
+        .params {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.2rem 1.4rem;
+            margin-bottom: 2rem;
+        }
+
+        .doc-footer {
+            margin-top: 3rem;
+            padding-top: 1.4rem;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+            }
+
+            pre,
+            .params,
+            .note {
+                border-color: #ccc;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <a class="back-link" href="./index.html#projets">&larr; Retour au portfolio</a>
+
+        <header class="doc-header">
+            <p class="kicker">Fiche projet · BTS SIO SISR</p>
+            <h1>Déploiement d'un serveur VPN OpenVPN — Accès distant sécurisé</h1>
+            <p class="lead">Mise en place pas à pas d'un serveur <strong>OpenVPN</strong> sur
+                <strong>Ubuntu Server 22.04</strong> pour offrir un accès distant chiffré à un réseau d'entreprise.
+                Création d'une infrastructure de clés (PKI) avec <code>Easy-RSA</code>, configuration du pare-feu et
+                du NAT, chiffrement <code>AES-256-GCM</code>, génération d'un profil client <code>.ovpn</code> et
+                sécurisation du serveur. Projet réalisé en environnement de formation (machine virtuelle).</p>
+        </header>
+
+        <h2>Contexte</h2>
+        <p>L'entreprise fictive <strong>ENT-BTS</strong> souhaite permettre à ses administrateurs de se connecter
+            au réseau interne <strong>depuis l'extérieur</strong>, de façon chiffrée et authentifiée. On déploie un
+            serveur OpenVPN qui crée un « tunnel » entre le poste distant et le serveur : tout le trafic du client
+            passe alors de manière sécurisée par ce tunnel.</p>
+
+        <div class="params">
+            <h3 style="margin-top:0;">Paramètres à personnaliser</h3>
+            <p>Toutes ces valeurs se règlent en haut des fichiers. Adapte-les à ton labo si besoin.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Élément</th>
+                        <th>Valeur d'exemple</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Système serveur</td>
+                        <td><code>Ubuntu Server 22.04 LTS</code></td>
+                    </tr>
+                    <tr>
+                        <td>Nom d'hôte</td>
+                        <td><code>vpn-server</code></td>
+                    </tr>
+                    <tr>
+                        <td>Interface publique</td>
+                        <td><code>eth0</code></td>
+                    </tr>
+                    <tr>
+                        <td>IP publique du serveur</td>
+                        <td><code>203.0.113.10</code></td>
+                    </tr>
+                    <tr>
+                        <td>Protocole / Port</td>
+                        <td><code>UDP / 1194</code></td>
+                    </tr>
+                    <tr>
+                        <td>Réseau virtuel (VPN)</td>
+                        <td><code>10.8.0.0/24</code></td>
+                    </tr>
+                    <tr>
+                        <td>Chiffrement</td>
+                        <td><code>AES-256-GCM</code> + <code>SHA256</code> + TLS</td>
+                    </tr>
+                    <tr>
+                        <td>Client</td>
+                        <td><code>client-admin</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="note warn">
+            <div><strong>Environnement de formation uniquement.</strong> L'IP <code>203.0.113.10</code> et le nom
+                d'interface <code>eth0</code> sont des exemples : remplace-les par les tiens (commande
+                <code>ip a</code> pour voir ton interface). Exécute les commandes avec <strong>sudo</strong>.</div>
+        </div>
+
+        <h3>Prérequis</h3>
+        <ul>
+            <li>Une VM ou un serveur <strong>Ubuntu Server 22.04</strong> avec accès <strong>root / sudo</strong>.</li>
+            <li>Une <strong>IP publique</strong> (ou une redirection du port <code>1194/udp</code> sur la box, en labo).</li>
+            <li>Un accès <strong>SSH</strong> au serveur et un client OpenVPN sur le poste distant
+                (OpenVPN Connect, Tunnelblick…).</li>
+        </ul>
+
+        <!-- ÉTAPE 1 -->
+        <h2><span class="num">1</span> Préparation du serveur</h2>
+        <p>On met le système à jour, on nomme le serveur, puis on active le <strong>routage IP</strong> (indispensable
+            pour faire transiter le trafic des clients).</p>
+        <pre><code><span class="cmt"># Mise à jour du système</span>
+sudo apt update &amp;&amp; sudo apt upgrade -y
+
+<span class="cmt"># Nom d'hôte</span>
+sudo hostnamectl set-hostname vpn-server
+
+<span class="cmt"># Activer le transfert de paquets (routage IPv4)</span>
+echo 'net.ipv4.ip_forward=1' | sudo tee /etc/sysctl.d/99-openvpn.conf
+sudo sysctl --system</code></pre>
+
+        <h3>Vérification</h3>
+        <pre><code>sysctl net.ipv4.ip_forward   <span class="cmt"># Doit renvoyer : net.ipv4.ip_forward = 1</span></code></pre>
+
+        <!-- ÉTAPE 2 -->
+        <h2><span class="num">2</span> Pare-feu UFW &amp; NAT</h2>
+        <p>On autorise le SSH (pour ne pas se couper l'accès) et le port OpenVPN, puis on configure le
+            <strong>NAT (MASQUERADE)</strong> : les clients VPN (réseau <code>10.8.0.0/24</code>) sortiront vers
+            Internet en empruntant l'IP publique du serveur.</p>
+        <pre><code><span class="cmt"># Ouvrir SSH puis le port OpenVPN</span>
+sudo ufw allow OpenSSH
+sudo ufw allow 1194/udp</code></pre>
+
+        <h3>2.1 — Règle de NAT</h3>
+        <p>Ajoute ce bloc <strong>tout en haut</strong> du fichier <code>/etc/ufw/before.rules</code>
+            (avant la ligne <code>*filter</code>) :</p>
+        <pre><code>*nat
+:POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+COMMIT</code></pre>
+        <p>Puis autorise le transfert par défaut dans <code>/etc/default/ufw</code> :</p>
+        <pre><code>DEFAULT_FORWARD_POLICY="ACCEPT"</code></pre>
+        <pre><code><span class="cmt"># Recharger le pare-feu</span>
+sudo ufw disable &amp;&amp; sudo ufw enable
+sudo ufw status verbose</code></pre>
+
+        <!-- ÉTAPE 3 -->
+        <h2><span class="num">3</span> Installation &amp; PKI (Easy-RSA)</h2>
+        <p>On installe OpenVPN puis on crée l'<strong>autorité de certification (CA)</strong> et les certificats.
+            Le VPN repose sur une <strong>PKI</strong> : la CA signe le certificat du serveur et ceux des clients,
+            ce qui garantit que seuls les postes autorisés peuvent se connecter.</p>
+        <pre><code>sudo apt install -y openvpn easy-rsa
+
+<span class="cmt"># Créer un dossier de travail pour la PKI</span>
+make-cadir ~/easy-rsa
+cd ~/easy-rsa
+
+<span class="cmt"># Initialiser la PKI et créer l'autorité de certification</span>
+./easyrsa init-pki
+./easyrsa build-ca nopass            <span class="cmt"># nom commun : ex. ENT-BTS-CA</span>
+
+<span class="cmt"># Certificat + clé du serveur</span>
+./easyrsa build-server-full server nopass
+
+<span class="cmt"># Paramètres Diffie-Hellman + clé tls-auth (HMAC anti-DoS)</span>
+./easyrsa gen-dh
+openvpn --genkey --secret ta.key</code></pre>
+
+        <h3>3.1 — Copier les fichiers vers OpenVPN</h3>
+        <pre><code>sudo cp pki/ca.crt pki/issued/server.crt pki/private/server.key \
+        pki/dh.pem ta.key /etc/openvpn/server/</code></pre>
+
+        <div class="note">
+            <div>La clé privée de la CA (<code>pki/private/ca.key</code>) ne doit <strong>jamais</strong> quitter
+                un endroit sûr : c'est elle qui permet de signer de nouveaux certificats.</div>
+        </div>
+
+        <!-- ÉTAPE 4 -->
+        <h2><span class="num">4</span> Configuration du serveur</h2>
+        <p>On crée le fichier <code>/etc/openvpn/server/server.conf</code>. Il définit le port, le réseau virtuel
+            distribué aux clients, le chiffrement et les options poussées (route par défaut + DNS).</p>
+        <pre><code><span class="cmt"># /etc/openvpn/server/server.conf</span>
+port 1194
+proto udp
+dev tun
+
+ca   ca.crt
+cert server.crt
+key  server.key
+dh   dh.pem
+tls-auth ta.key 0
+
+<span class="cmt"># Réseau virtuel attribué aux clients</span>
+server 10.8.0.0 255.255.255.0
+
+<span class="cmt"># Chiffrement moderne</span>
+cipher AES-256-GCM
+auth  SHA256
+
+<span class="cmt"># Tout le trafic du client passe par le VPN + DNS</span>
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 1.1.1.1"
+push "dhcp-option DNS 8.8.8.8"
+
+keepalive 10 120
+persist-key
+persist-tun
+user  nobody
+group nogroup
+status /var/log/openvpn/status.log
+verb 3</code></pre>
+        <pre><code><span class="cmt"># Démarrer et activer le service au boot</span>
+sudo systemctl enable --now openvpn-server@server
+sudo systemctl status openvpn-server@server</code></pre>
+
+        <h3>Vérification</h3>
+        <pre><code>ip a show tun0   <span class="cmt"># L'interface tun0 (10.8.0.1) doit exister</span></code></pre>
+
+        <!-- ÉTAPE 5 -->
+        <h2><span class="num">5</span> Génération d'un client (.ovpn)</h2>
+        <p>On crée le certificat du client, puis on assemble un fichier <code>.ovpn</code> « tout-en-un »
+            (configuration + certificats inclus) à importer sur le poste distant.</p>
+        <pre><code>cd ~/easy-rsa
+./easyrsa build-client-full client-admin nopass</code></pre>
+        <p>Modèle de fichier <code>client-admin.ovpn</code> (les balises seront remplies avec le contenu des
+            certificats) :</p>
+        <pre><code>client
+dev tun
+proto udp
+remote 203.0.113.10 1194     <span class="cmt"># IP publique du serveur</span>
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+cipher AES-256-GCM
+auth SHA256
+key-direction 1
+verb 3
+
+<span class="cmt"># Coller ici le contenu des fichiers :</span>
+&lt;ca&gt;       ... pki/ca.crt ...                 &lt;/ca&gt;
+&lt;cert&gt;     ... pki/issued/client-admin.crt ... &lt;/cert&gt;
+&lt;key&gt;      ... pki/private/client-admin.key ... &lt;/key&gt;
+&lt;tls-auth&gt; ... ta.key ...                       &lt;/tls-auth&gt;</code></pre>
+        <div class="note">
+            <div>Astuce : un petit script <code>bash</code> peut assembler automatiquement ce <code>.ovpn</code>
+                en concaténant le modèle et les certificats — pratique pour générer rapidement plusieurs clients.</div>
+        </div>
+
+        <!-- ÉTAPE 6 -->
+        <h2><span class="num">6</span> Connexion &amp; vérification</h2>
+        <p>On importe le <code>.ovpn</code> dans le client OpenVPN du poste distant, on se connecte, puis on
+            vérifie que le tunnel fonctionne.</p>
+        <pre><code><span class="cmt"># Sur le SERVEUR : voir les clients connectés</span>
+sudo cat /var/log/openvpn/status.log
+
+<span class="cmt"># Sur le CLIENT, une fois connecté :</span>
+ping 10.8.0.1        <span class="cmt"># La passerelle VPN doit répondre</span>
+curl ifconfig.me     <span class="cmt"># Doit afficher l'IP PUBLIQUE DU SERVEUR (203.0.113.10)</span></code></pre>
+        <p>Si <code>curl ifconfig.me</code> renvoie l'IP du serveur, c'est gagné : tout le trafic du client
+            sort bien par le tunnel chiffré. ✔</p>
+
+        <!-- ÉTAPE 7 -->
+        <h2><span class="num">7</span> Sécurisation du serveur</h2>
+        <p>On durcit l'accès au serveur pour éviter les intrusions.</p>
+        <pre><code><span class="cmt"># Protection anti-bruteforce sur SSH</span>
+sudo apt install -y fail2ban
+sudo systemctl enable --now fail2ban</code></pre>
+        <p>Puis dans <code>/etc/ssh/sshd_config</code>, on renforce le SSH :</p>
+        <pre><code>PermitRootLogin no
+PasswordAuthentication no     <span class="cmt"># Connexion SSH par clé uniquement</span></code></pre>
+        <pre><code>sudo systemctl restart ssh</code></pre>
+        <ul>
+            <li><strong>Fail2ban</strong> bannit temporairement les IP qui multiplient les échecs de connexion.</li>
+            <li><strong>SSH par clé</strong> + root désactivé : la surface d'attaque est fortement réduite.</li>
+            <li>Le pare-feu <strong>UFW</strong> n'ouvre que l'essentiel (SSH + 1194/udp).</li>
+        </ul>
+
+        <h2>Récapitulatif</h2>
+        <p>À la fin du projet, l'infrastructure dispose de :</p>
+        <ul>
+            <li>Un serveur <code>vpn-server</code> sous Ubuntu avec OpenVPN actif sur <code>UDP 1194</code>.</li>
+            <li>Une <strong>PKI Easy-RSA</strong> (CA, certificat serveur, certificats clients).</li>
+            <li>Un tunnel chiffré en <code>AES-256-GCM</code> distribuant le réseau <code>10.8.0.0/24</code>.</li>
+            <li>Un <strong>NAT</strong> permettant aux clients de sortir par l'IP publique du serveur.</li>
+            <li>Un profil <code>client-admin.ovpn</code> prêt à importer.</li>
+            <li>Un serveur durci (UFW, Fail2ban, SSH par clé).</li>
+        </ul>
+
+        <p><span class="pill">Compétences BTS SISR</span> Linux (Ubuntu Server) · OpenVPN · PKI / certificats ·
+            pare-feu UFW &amp; NAT · réseau &amp; routage · sécurité · documentation.</p>
+
+        <footer class="doc-footer">
+            Projet de formation — Kendi Cadet · BTS SIO SISR ·
+            <a href="./index.html#projets" style="color:var(--accent-2);">Retour au portfolio</a>
+        </footer>
+    </div>
+</body>
+
+</html>
