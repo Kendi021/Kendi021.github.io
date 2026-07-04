@@ -1625,7 +1625,8 @@ iframe {
 
 .vpn-line {
     display: block;
-    white-space: pre;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 
 .vpn-line--blank {
