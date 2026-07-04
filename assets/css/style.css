@@ -1216,6 +1216,13 @@ iframe {
     flex-shrink: 0;
 }
 
+.alternance-contact {
+    margin-top: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .testimonial-grid {
     display: grid;
     gap: 1.5rem;
