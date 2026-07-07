@@ -38,6 +38,7 @@
     --text-dark: #0f172a;
     --muted: #9ab0c9;
     --border: rgba(126, 163, 204, 0.22);
+    --accent-deep: #123a8f;
     --accent: #2b77ff;
     --accent-2: #00c2ff;
     --accent-3: #1de4a3;
@@ -415,13 +416,19 @@ header {
     animation: moveBanner 1s forwards;
 }
 
-/* ----- Boutons (principal, secondaire, « voir le projet ») ----- */
+/* ----- Boutons (principal, secondaire, « voir le projet ») -----
+   Style premium unifié : dégradé bleu profond, reflet lumineux,
+   relief au survol, animation d'icône. */
 .bouton-personnalise,
 .bouton-secondaire,
 .info-carte .bouton-voir {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 0.6rem;
     min-height: 50px;
     padding: 0.95rem 1.5rem;
     border-radius: 999px;
@@ -430,21 +437,45 @@ header {
     font-size: 0.82rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    cursor: pointer;
-}
-
-.bouton-personnalise {
     color: #ffffff;
-    background: linear-gradient(120deg, var(--accent), var(--accent-2));
-    box-shadow: 0 16px 26px rgba(43, 119, 255, 0.28);
+    background: linear-gradient(120deg, var(--accent-deep), var(--accent));
+    box-shadow: 0 12px 26px rgba(18, 58, 143, 0.38);
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, letter-spacing 0.25s ease;
 }
 
-.bouton-secondaire {
-    color: #eef6ff;
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.18);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+/* Dégradé bleu plus clair révélé au survol */
+.bouton-personnalise::before,
+.bouton-secondaire::before,
+.info-carte .bouton-voir::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(120deg, var(--accent), #58a0ff);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+/* Reflet lumineux qui balaye le bouton */
+.bouton-personnalise::after,
+.bouton-secondaire::after,
+.info-carte .bouton-voir::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -130%;
+    width: 90%;
+    height: 100%;
+    background: linear-gradient(120deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            rgba(255, 255, 255, 0.65),
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+    pointer-events: none;
 }
 
 .bouton-personnalise:hover,
@@ -453,14 +484,92 @@ header {
 .bouton-personnalise:focus-visible,
 .bouton-secondaire:focus-visible,
 .info-carte .bouton-voir:focus-visible {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(18, 58, 143, 0.5);
+    letter-spacing: 0.16em;
+}
+
+.bouton-personnalise:hover::before,
+.bouton-secondaire:hover::before,
+.info-carte .bouton-voir:hover::before,
+.bouton-personnalise:focus-visible::before,
+.bouton-secondaire:focus-visible::before,
+.info-carte .bouton-voir:focus-visible::before {
+    opacity: 1;
+}
+
+.bouton-personnalise:hover::after,
+.bouton-secondaire:hover::after,
+.info-carte .bouton-voir:hover::after,
+.bouton-personnalise:focus-visible::after,
+.bouton-secondaire:focus-visible::after,
+.info-carte .bouton-voir:focus-visible::after {
+    left: 130%;
 }
 
 .bouton-personnalise:active,
 .bouton-secondaire:active,
 .info-carte .bouton-voir:active {
-    transform: scale(0.95);
+    transform: translateY(-1px) scale(0.97);
+}
+
+/* L'icône éventuelle s'anime avec le bouton */
+.bouton-personnalise i,
+.bouton-secondaire i,
+.info-carte .bouton-voir i {
+    transition: transform 0.3s ease;
+}
+
+.bouton-personnalise:hover i,
+.bouton-secondaire:hover i,
+.info-carte .bouton-voir:hover i,
+.bouton-personnalise:focus-visible i,
+.bouton-secondaire:focus-visible i,
+.info-carte .bouton-voir:focus-visible i {
+    transform: translateY(-2px) rotate(-8deg) scale(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .bouton-personnalise,
+    .bouton-secondaire,
+    .info-carte .bouton-voir,
+    .bouton-personnalise::after,
+    .bouton-secondaire::after,
+    .info-carte .bouton-voir::after,
+    .bouton-personnalise i,
+    .bouton-secondaire i,
+    .info-carte .bouton-voir i {
+        transition: none;
+    }
+
+    .bouton-personnalise:hover,
+    .bouton-secondaire:hover,
+    .info-carte .bouton-voir:hover,
+    .bouton-personnalise:focus-visible,
+    .bouton-secondaire:focus-visible,
+    .info-carte .bouton-voir:focus-visible {
+        transform: none;
+        letter-spacing: 0.12em;
+    }
+
+    .bouton-personnalise:hover::after,
+    .bouton-secondaire:hover::after,
+    .info-carte .bouton-voir:hover::after,
+    .bouton-personnalise:focus-visible::after,
+    .bouton-secondaire:focus-visible::after,
+    .info-carte .bouton-voir:focus-visible::after {
+        left: -130%;
+    }
+
+    .bouton-personnalise:hover i,
+    .bouton-secondaire:hover i,
+    .info-carte .bouton-voir:hover i,
+    .bouton-personnalise:focus-visible i,
+    .bouton-secondaire:focus-visible i,
+    .info-carte .bouton-voir:focus-visible i {
+        transform: none;
+    }
 }
 
 /* ----- Barre latérale (menu de navigation coulissant) ----- */
@@ -951,15 +1060,11 @@ header {
     gap: 0.7rem;
 }
 
-.info-carte .bouton-voir {
-    background: #ffffff;
-    color: #0f172a;
-}
-
+/* Variante secondaire des cartes : même style bleu, léger liseré
+   pour garder une nuance de hiérarchie entre les deux actions. */
 .info-carte .bouton-voir-secondaire {
-    background: rgba(255, 255, 255, 0.12);
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 12px 26px rgba(18, 58, 143, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .info-carte .bouton-voir:disabled {
@@ -1241,11 +1346,10 @@ iframe {
     flex-shrink: 0;
 }
 
+/* CTA « Me contacter » : hérite du style premium commun des boutons,
+   ne conserve ici que son espacement propre. */
 .alternance-contact {
     margin-top: 1.5rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
 .testimonial-grid {
