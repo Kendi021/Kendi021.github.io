@@ -1,3 +1,10 @@
+/* ================================================================
+   KeyFrames.css — ⚠️ FICHIER NON UTILISÉ (hérité)
+   Ces animations ont été fusionnées dans assets/css/style.css
+   (section « 3. ANIMATIONS »). Aucune page HTML ne charge ce fichier.
+   Conservé pour référence — modifier style.css pour agir sur le site.
+   ================================================================ */
+
 @keyframes moveMenu {
     0% {
         opacity: 0;

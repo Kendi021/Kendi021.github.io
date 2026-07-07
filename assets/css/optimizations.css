@@ -1,5 +1,8 @@
 /* =========================================================================
    OPTIMISATIONS DE PERFORMANCE ET D'ACCESSIBILITE
+   ⚠️ FICHIER NON UTILISÉ (hérité) : ces règles sont déjà intégrées dans
+   assets/css/style.css (section « PERFORMANCE & ACCESSIBILITÉ »).
+   Aucune page HTML ne charge ce fichier — modifier style.css pour agir.
    ========================================================================= */
 
 /* GPU hints uniquement sur les zones animees ou lourdes */

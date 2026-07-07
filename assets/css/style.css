@@ -1,6 +1,17 @@
 /* ================================================
    PORTFOLIO KENDI — style.css
-   Feuille de style principale (fusionnée)
+   Feuille de style principale (fusionnée) de index.html.
+
+   SOMMAIRE (pour se repérer — cherchez les bannières « ===== ») :
+     1. RESET & BASE ............ reset, variables :root, styles de base
+     2. PRÉCHARGEUR ............. écran de chargement + conteneur
+     3. ANIMATIONS (@keyframes) . hero, zoom, badges flottants
+     4. MISE EN PAGE ............ scroll-reveal, menu, hero, boutons,
+                                  barre latérale, en-têtes de section
+     5. TERMINAL & PROJETS ...... terminal compétences, cartes projets, modales
+     6. HERO : BADGES FLOTTANTS . badges décoratifs + section « À propos »
+        (puis media queries responsive, footer, terminaux de démo VPN,
+         et bloc « PERFORMANCE & ACCESSIBILITÉ » en fin de fichier)
    ================================================ */
 
 /* Polices Google Fonts : chargées via <link> dans index.html (non bloquant) */
@@ -74,7 +85,8 @@ img {
 }
 
 /* ================================================
-   2. VARIABLES CSS
+   2. PRÉCHARGEUR & CONTENEUR
+   (les variables CSS sont dans le :root de la section 1)
    ================================================ */
 
 .container {
@@ -194,9 +206,12 @@ img {
 }
 
 /* ================================================
-   4. ANIMATIONS AU DÉFILEMENT
+   4. MISE EN PAGE
+   Révélation au scroll, puis menu burger, hero, boutons,
+   barre latérale et en-têtes de section.
    ================================================ */
 
+/* ----- Révélation au défilement (classe .anime ajoutée par script.js) ----- */
 [data-animation] {
     opacity: 0;
     transition: 0.55s ease;
@@ -219,6 +234,7 @@ img {
     transform: translate3d(0, 0, 0);
 }
 
+/* ----- Bouton menu burger (fixe en haut à droite) ----- */
 .menu-burger {
     position: fixed;
     top: 1.25rem;
@@ -283,6 +299,7 @@ img {
     transform: translateY(-6px) rotate(-45deg);
 }
 
+/* ----- Header / Hero (bannière plein écran d'accueil) ----- */
 header {
     position: relative;
     min-height: 100vh;
@@ -398,6 +415,7 @@ header {
     animation: moveBanner 1s forwards;
 }
 
+/* ----- Boutons (principal, secondaire, « voir le projet ») ----- */
 .bouton-personnalise,
 .bouton-secondaire,
 .info-carte .bouton-voir {
@@ -445,6 +463,7 @@ header {
     transform: scale(0.95);
 }
 
+/* ----- Barre latérale (menu de navigation coulissant) ----- */
 .barre-laterale {
     position: fixed;
     top: 5rem;
@@ -534,6 +553,7 @@ header {
     background: linear-gradient(120deg, var(--accent), var(--accent-2));
 }
 
+/* ----- En-têtes de section (titres « À propos », « Compétences »...) ----- */
 .section-competences,
 .section-projets {
     position: relative;
@@ -583,9 +603,12 @@ header {
 }
 
 /* ================================================
-   5. TERMINAL INTERACTIF (COMPÉTENCES)
+   5. TERMINAL & PROJETS
+   Terminal interactif (compétences), puis grille de
+   cartes projets et modales de détail.
    ================================================ */
 
+/* ----- Terminal interactif (section Compétences) ----- */
 .terminal-window {
     overflow: hidden;
     border-radius: 30px;
@@ -789,6 +812,7 @@ header {
     flex: 1;
 }
 
+/* ----- Cartes projets (grille + contenu de chaque carte) ----- */
 .section-projets {
     background:
         radial-gradient(circle at 15% 0%, rgba(43, 119, 255, 0.12), transparent 24%),
@@ -948,6 +972,7 @@ header {
     transform: none;
 }
 
+/* ----- Modales de détail projet (VPN / Active Directory) ----- */
 .modale {
     display: none;
     position: fixed;

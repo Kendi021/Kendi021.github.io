@@ -2,6 +2,7 @@
 <html lang="fr" data-theme="cyber">
 
 <head>
+  <!-- ===== MÉTADONNÉES : SEO, réseaux sociaux (Open Graph), favicons, polices, CSS ===== -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CV Kendi Cadet — Alternance BTS SIO SISR | Support & systèmes/réseaux</title>
@@ -13,6 +14,7 @@
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#070b14" />
   <link rel="canonical" href="https://kendi021.github.io/cv-professionnel.html" />
+  <link rel="icon" type="image/svg+xml" href="./assets/images/logo.svg" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon-16x16.png" />
@@ -39,9 +41,22 @@
 </head>
 
 <body>
+  <!-- ================================================================
+       CV PROFESSIONNEL — cv-professionnel.html
+       CV une colonne avec 2 thèmes visuels (recruteur / cybersécurité).
+       Ordre des sections :
+         Hero → Profil → Atouts → Compétences → Langues →
+         Formation → Expériences → Centres d'intérêt → Réseaux & CV.
+       Interactions (bascule de thème, apparition au défilement) :
+       voir le <script> tout en bas de page.
+       Styles : assets/css/cv-professionnel.css.
+       ================================================================ -->
+
+  <!-- Lien d'évitement (accessibilité clavier : saute droit au contenu) -->
   <a class="skip-link" href="#contenu">Aller au contenu principal</a>
 
   <main id="contenu">
+    <!-- ===== EN-TÊTE : sélecteur de thème, identité, rôle, badges, coordonnées ===== -->
     <header id="accueil" class="reveal">
       <div class="theme-switcher" role="group" aria-label="Variantes visuelles du CV">
         <span class="theme-label">Style</span>
@@ -67,6 +82,7 @@
       </ul>
     </header>
 
+    <!-- ===== PROFIL (résumé) ===== -->
     <section aria-labelledby="profil-title" class="reveal">
       <h2 id="profil-title">Profil</h2>
       <p>Diplômé d’un Bac Pro MELEC, actuellement en BTS SIO option SISR et en
@@ -77,6 +93,7 @@
         d’une entreprise innovante tout en poursuivant ma formation en alternance.</p>
     </section>
 
+    <!-- ===== ATOUTS CLÉS (3 cartes « spotlight ») ===== -->
     <section aria-labelledby="atouts-title" class="reveal">
       <h2 id="atouts-title">Atouts clés</h2>
       <div class="spotlight-grid">
@@ -97,6 +114,7 @@
       </div>
     </section>
 
+    <!-- ===== COMPÉTENCES TECHNIQUES (cartes par domaine) ===== -->
     <section id="competences" aria-labelledby="competences-title" class="reveal">
       <h2 id="competences-title">Compétences techniques</h2>
       <div class="tag-grid">
@@ -125,11 +143,13 @@
       </div>
     </section>
 
+    <!-- ===== LANGUES ===== -->
     <section aria-labelledby="langues-title" class="reveal">
       <h2 id="langues-title">Langues</h2>
       <p>Français : Langue maternelle. Anglais : Compréhension écrite intermédiaire, Expression orale débutant.</p>
     </section>
 
+    <!-- ===== FORMATION (chronologie, du plus récent au plus ancien) ===== -->
     <section aria-labelledby="formation-title" class="reveal">
       <h2 id="formation-title">Formation</h2>
       <div class="timeline">
@@ -148,6 +168,7 @@
       </div>
     </section>
 
+    <!-- ===== EXPÉRIENCES PROFESSIONNELLES (chronologie) ===== -->
     <section id="experiences" aria-labelledby="experiences-title" class="reveal">
       <h2 id="experiences-title">Expériences professionnelles</h2>
       <div class="timeline">
@@ -199,12 +220,14 @@
       </div>
     </section>
 
+    <!-- ===== CENTRES D'INTÉRÊT ===== -->
     <section aria-labelledby="interets-title" class="reveal">
       <h2 id="interets-title">Centres d'intérêt</h2>
       <p>Informatique (montage PC, cybersécurité, nouvelles technologies), Sport (badminton, football), Photographie,
         Formule 1.</p>
     </section>
 
+    <!-- ===== BAS DE PAGE : réseaux sociaux + téléchargement du CV / retour au portfolio ===== -->
     <section id="contact" class="bottom-actions unified-hub reveal" aria-labelledby="contact-title">
       <h2 id="contact-title" class="bottom-actions-title">Réseaux et documents</h2>
       <p class="hub-caption">Retrouvez mon profil en ligne et accédez rapidement à mon CV.</p>
@@ -228,11 +251,18 @@
     </section>
   </main>
 
+  <!-- ================================================================
+       SCRIPT DE LA PAGE
+         1. Bascule de thème (recruteur / cybersécurité) mémorisée dans localStorage
+         2. Apparition des blocs .reveal au défilement (IntersectionObserver)
+       ================================================================ -->
   <script>
+    /* ----- 1. Bascule de thème ----- */
     const themeButtons = document.querySelectorAll('.theme-btn');
     const root = document.documentElement;
-    const THEME_KEY = 'cv-theme';
+    const THEME_KEY = 'cv-theme'; // clé localStorage pour retenir le choix
 
+    // Applique un thème : met à jour data-theme sur <html> + l'état des boutons
     function applyTheme(theme) {
       const safeTheme = theme === 'cyber' ? 'cyber' : 'corporate';
       root.setAttribute('data-theme', safeTheme);
@@ -244,9 +274,11 @@
       });
     }
 
+    // Au chargement : applique le thème sauvegardé (ou « cyber » par défaut)
     const savedTheme = localStorage.getItem(THEME_KEY);
     applyTheme(savedTheme || 'cyber');
 
+    // Clic sur un bouton de thème : applique et mémorise le choix
     themeButtons.forEach((button) => {
       button.addEventListener('click', () => {
         const nextTheme = button.dataset.theme;
@@ -255,11 +287,14 @@
       });
     });
 
+    /* ----- 2. Apparition au défilement ----- */
     const revealElements = document.querySelectorAll('.reveal');
 
+    // Pas d'IntersectionObserver (vieux navigateur) : on affiche tout directement
     if (!('IntersectionObserver' in window)) {
       revealElements.forEach((element) => element.classList.add('is-visible'));
     } else {
+      // Ajoute .is-visible quand l'élément entre dans le champ, puis arrête de l'observer
       const observer = new IntersectionObserver(
         (entries, obs) => {
           entries.forEach((entry) => {

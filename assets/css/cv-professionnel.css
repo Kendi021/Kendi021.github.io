@@ -1,3 +1,24 @@
+/* ================================================================
+   CV PROFESSIONNEL — cv-professionnel.css
+   Feuille de style de la page cv-professionnel.html.
+
+   SOMMAIRE (pour se repérer — cherchez les bannières « ===== ») :
+     1. VARIABLES & THÈMES ...... :root + thèmes « corporate » / « cyber »
+     2. RESET & BASE ............ reset, body, texture de fond
+     3. SÉLECTEUR DE THÈME ...... boutons de bascule de thème
+     4. EN-TÊTE / HERO .......... titre, rôle, badges, coordonnées
+     5. COMPÉTENCES ............. titres de section + cartes de compétences
+     6. PARCOURS (timeline) ..... formation / chronologie
+     7. EXPÉRIENCES ............. liste des expériences
+     8. BAS DE PAGE ............. réseaux sociaux + actions (boutons)
+     9. ANIMATION « reveal » .... apparition au défilement
+    10. RESPONSIVE & IMPRESSION . media queries + styles @media print
+   ================================================================ */
+
+/* ================================================
+   1. VARIABLES & THÈMES
+   Le thème actif est piloté par l'attribut data-theme sur <html>.
+   ================================================ */
 :root {
     --bg: #f3f7fc;
     --surface: #ffffff;
@@ -49,6 +70,9 @@ html[data-theme="cyber"] {
     --shadow-md: 0 0 0 1px rgba(0, 194, 255, 0.35), 0 24px 42px rgba(2, 8, 23, 0.65);
 }
 
+/* ================================================
+   2. RESET & BASE
+   ================================================ */
 * {
     box-sizing: border-box;
 }
@@ -130,6 +154,9 @@ section {
     padding: 1.2rem;
 }
 
+/* ================================================
+   3. SÉLECTEUR DE THÈME (boutons corporate / cyber)
+   ================================================ */
 .theme-switcher {
     display: inline-flex;
     align-items: center;
@@ -233,6 +260,9 @@ h2::after {
     background: linear-gradient(90deg, var(--accent), var(--accent-soft));
 }
 
+/* ================================================
+   4. EN-TÊTE / HERO (nom, rôle, badges, coordonnées)
+   ================================================ */
 header#accueil {
     position: relative;
     overflow: hidden;
@@ -398,6 +428,9 @@ html[data-theme="cyber"] .bottom-actions.unified-hub {
         linear-gradient(145deg, #08101b, #0b1d2e);
 }
 
+/* ================================================
+   5. COMPÉTENCES (intro de section + cartes de compétences)
+   ================================================ */
 section > p {
     margin: 0;
     max-width: 78ch;
@@ -446,6 +479,9 @@ section > p {
     margin: 0;
 }
 
+/* ================================================
+   6. PARCOURS (chronologie / formation)
+   ================================================ */
 .timeline {
     display: grid;
     gap: 0.8rem;
@@ -479,6 +515,9 @@ section > p {
     overflow-wrap: anywhere;
 }
 
+/* ================================================
+   7. EXPÉRIENCES
+   ================================================ */
 .experience-list {
     margin: 0.36rem 0 0;
     padding-left: 1rem;
@@ -506,6 +545,9 @@ section > p {
     z-index: 1;
 }
 
+/* ================================================
+   8. BAS DE PAGE (réseaux sociaux + boutons d'action)
+   ================================================ */
 .bottom-actions-title {
     margin: 0 0 0.46rem;
     text-align: center;
@@ -567,6 +609,7 @@ section > p {
     gap: 0.75rem;
 }
 
+/* ----- Boutons (btn / btn-primary / btn-secondary) ----- */
 .btn {
     display: inline-flex;
     justify-content: center;
@@ -614,6 +657,10 @@ section > p {
     outline: none;
 }
 
+/* ================================================
+   9. ANIMATION « reveal » (apparition au défilement)
+   La classe .is-visible est ajoutée par le script inline de la page.
+   ================================================ */
 .reveal {
     opacity: 0;
     transform: translateY(12px);
@@ -625,6 +672,10 @@ section > p {
     transform: translateY(0);
 }
 
+/* ================================================
+   10. RESPONSIVE & IMPRESSION
+   Media queries (tailles d'écran, reduced-motion) puis @media print.
+   ================================================ */
 @media (min-width: 840px) {
     .spotlight-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));

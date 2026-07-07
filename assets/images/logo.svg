@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Logo K — Kendi Cadet">
+  <title>Logo K — Kendi Cadet</title>
+  <defs>
+    <!-- Fond marine profond, cohérent avec le thème du site (#070b14 / #0d1524) -->
+    <radialGradient id="bg" cx="38%" cy="30%" r="85%">
+      <stop offset="0%" stop-color="#14273f"/>
+      <stop offset="55%" stop-color="#0b1526"/>
+      <stop offset="100%" stop-color="#070b14"/>
+    </radialGradient>
+    <!-- Dégradé de marque appliqué au « K » : bleu -> cyan -> vert -->
+    <linearGradient id="k" x1="150" y1="140" x2="372" y2="372" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2b77ff"/>
+      <stop offset="52%" stop-color="#00c2ff"/>
+      <stop offset="100%" stop-color="#1de4a3"/>
+    </linearGradient>
+    <!-- Dégradé de l'anneau d'accent -->
+    <linearGradient id="ring" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00c2ff"/>
+      <stop offset="100%" stop-color="#2b77ff"/>
+    </linearGradient>
+    <!-- Halo lumineux derrière le K -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="9" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Badge circulaire -->
+  <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
+  <!-- Anneau d'accent subtil -->
+  <circle cx="256" cy="256" r="236" fill="none" stroke="url(#ring)" stroke-width="6" opacity="0.55"/>
+
+  <!-- Monogramme « K » : hampe verticale + deux branches arrondies au dégradé de marque -->
+  <g filter="url(#glow)">
+    <rect x="150" y="142" width="58" height="228" rx="16" fill="url(#k)"/>
+    <path d="M196 256 L356 150" fill="none" stroke="url(#k)" stroke-width="58" stroke-linecap="round"/>
+    <path d="M196 256 L360 368" fill="none" stroke="url(#k)" stroke-width="58" stroke-linecap="round"/>
+  </g>
+</svg>

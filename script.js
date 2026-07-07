@@ -1,3 +1,22 @@
+/* ================================================================
+   PORTFOLIO KENDI — script.js
+   Script principal de la page d'accueil (index.html).
+
+   SOMMAIRE (pour se repérer — cherchez les bannières « ===== ») :
+     1. PRÉCHARGEUR ............. écran de chargement au démarrage
+     2. MENU BURGER ............. ouverture/fermeture du menu latéral
+     3. UTILITAIRE debounce ..... limite la fréquence d'un appel
+     4. ANIMATIONS AU SCROLL .... apparition des blocs [data-animation]
+     5. MODALES PROJETS ......... ouverture/fermeture + gestion du focus
+     6. TERMINAL COMPÉTENCES .... terminal interactif de la section « Compétences »
+     7. TERMINAUX DE DÉMO ....... démos animées VPN & Active Directory (dans les modales)
+   ================================================================ */
+
+/* ================================================
+   1. PRÉCHARGEUR
+   Masque le loader une fois la page chargée
+   (avec un temps d'affichage minimum pour éviter un flash).
+   ================================================ */
 const preloader = document.getElementById("preloader");
 
 window.addEventListener("load", () => {
@@ -14,10 +33,16 @@ window.addEventListener("load", () => {
     }, remainingTime);
 });
 
+/* ================================================
+   2. MENU (navigation latérale)
+   Le bouton bascule la classe .afficher-menu sur .container.
+   Ouverture au clic/clavier, fermeture au clic sur un lien.
+   ================================================ */
 const menuToggle = document.getElementById("fermer-menu");
 const container = document.querySelector(".container");
 const menuLinks = document.querySelectorAll(".lien-menu");
 
+// Applique l'état ouvert/fermé (classe CSS + attribut ARIA pour l'accessibilité)
 function setMenuState(isOpen) {
     if (!menuToggle || !container) return;
 
@@ -43,6 +68,11 @@ menuLinks.forEach((link) => {
     link.addEventListener("click", () => setMenuState(false));
 });
 
+/* ================================================
+   3. UTILITAIRE : debounce
+   Retarde l'exécution d'une fonction tant qu'elle est
+   rappelée (utilisé ici pour limiter l'événement scroll).
+   ================================================ */
 function debounce(func, wait, immediate) {
     let timeout;
     return function (...args) {
@@ -58,6 +88,11 @@ function debounce(func, wait, immediate) {
     };
 }
 
+/* ================================================
+   4. ANIMATIONS AU DÉFILEMENT
+   Ajoute la classe .anime aux éléments [data-animation]
+   dès qu'ils entrent dans le champ de vision (au 3/4 de l'écran).
+   ================================================ */
 const animatedElements = document.querySelectorAll("[data-animation]");
 const animationClass = "anime";
 
@@ -72,6 +107,13 @@ if (animatedElements.length) {
     animationScroll();
     window.addEventListener("scroll", debounce(animationScroll, 10));
 }
+
+/* ================================================
+   5. MODALES PROJETS (VPN & Active Directory)
+   ouvrirModale/fermerModale sont appelées depuis les
+   boutons « Voir le projet » dans index.html (onclick).
+   Le focus est mémorisé puis restauré (accessibilité).
+   ================================================ */
 
 // Élément ayant le focus avant ouverture de la modale (pour le restaurer ensuite)
 let elementFocusAvantModale = null;
@@ -117,6 +159,17 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
+/* ================================================
+   6. TERMINAL COMPÉTENCES (section « Compétences »)
+   Terminal factice : chaque commande (ls, cat html.md, ...)
+   renvoie une fiche de compétences en HTML.
+   - fileSystem       : « commande » -> HTML affiché
+   - processCommand   : exécute la commande saisie
+   - runCommand       : simule la frappe (boutons raccourcis)
+   Historique des commandes navigable avec ↑ / ↓.
+   ================================================ */
+
+// Table des commandes reconnues -> contenu HTML renvoyé dans le terminal
 const fileSystem = {
     "ls": `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top:10px;">
         <span style="color: #ffab40; font-weight:bold;">html.md</span>
@@ -187,13 +240,14 @@ const fileSystem = {
     </div>`
 };
 
+// Références DOM du terminal (hidden-input capte la frappe, visible-input l'affiche)
 const terminalOutput = document.getElementById("terminal-output");
 const hiddenInput = document.getElementById("hidden-input");
 const visibleInput = document.getElementById("visible-input");
 const terminalScreen = document.querySelector(".terminal-screen");
 
-let typingTimer;
-const commandHistory = [];
+let typingTimer;              // timer de l'effet « machine à écrire » (runCommand)
+const commandHistory = [];    // commandes déjà tapées (rappel avec ↑ / ↓)
 let historyIndex = -1;
 
 function addToHistory(cmd) {
@@ -241,6 +295,7 @@ hiddenInput.addEventListener("keydown", (e) => {
     }
 });
 
+// Exécute une commande : affiche la ligne saisie puis la réponse correspondante
 function processCommand(cmd) {
     // Entrée à vide : on ne fait rien (évitait d'afficher "ls" par correspondance partielle)
     if (!cmd || !cmd.trim()) return;
@@ -282,6 +337,8 @@ function processCommand(cmd) {
     terminalScreen.scrollTop = terminalScreen.scrollHeight;
 }
 
+// Simule la frappe d'une commande caractère par caractère, puis l'exécute
+// (appelée par les boutons « raccourcis » sous le terminal)
 function runCommand(text) {
     if (typingTimer) clearTimeout(typingTimer);
 
@@ -311,9 +368,13 @@ function runCommand(text) {
     typeWriter();
 }
 
-// ================================================
-// TERMINAUX DE DÉMO SIMULÉS (VPN & Active Directory)
-// ================================================
+/* ================================================
+   7. TERMINAUX DE DÉMO SIMULÉS (VPN & Active Directory)
+   Rejoue une suite d'étapes (DEMOS) ligne par ligne dans le
+   terminal de la modale, avec délais et code couleur par type.
+   Gère aussi les onglets « Démo / Documentation ».
+   IIFE : tout est encapsulé pour ne pas polluer le scope global.
+   ================================================ */
 (function () {
     // Étapes de chaque démo : type de ligne (couleur) + texte + délai (ms) avant affichage
     const DEMOS = {

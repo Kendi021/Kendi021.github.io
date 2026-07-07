@@ -1,3 +1,9 @@
+/* ================================================================
+   proprieties.css — ⚠️ FICHIER NON UTILISÉ (hérité)
+   Ces variables de police sont déjà définies dans le :root de
+   assets/css/style.css. Aucune page HTML ne charge ce fichier.
+   ================================================================ */
+
 :root {
     --font-primary: "Archivo", "Segoe UI", sans-serif;
     --font-secondary: "Space Grotesk", "Segoe UI", sans-serif;

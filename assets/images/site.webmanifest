@@ -3,14 +3,19 @@
     "short_name": "Kendi Cadet",
     "icons": [
         {
-            "src": "images/android-chrome-192x192.png",
+            "src": "android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "images/android-chrome-512x512.png",
+            "src": "android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
+        },
+        {
+            "src": "logo.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
         }
     ],
     "theme_color": "#2b77ff",
